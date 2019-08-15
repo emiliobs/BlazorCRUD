@@ -37,7 +37,24 @@ namespace BlazorCRUD.Server.Controllers
             return new CreatedAtRouteResult("ObtenerPersona",  new { id = persona.Id },persona);
         }
 
+        [HttpPut]
+        public async Task<ActionResult> put(Persona persona)
+        {
+            _context.Entry(persona).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
 
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            var persona = new Persona { Id = id };
+            _context.Remove(persona);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
        
     }
 }

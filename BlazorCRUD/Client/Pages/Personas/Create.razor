@@ -4,25 +4,13 @@
 
 <h3>Crear Persona</h3>
 
-<EditForm Model="@persona" OnValidSubmit="@CreaarPersona">
-    <div class="form-field">
-        <label>Nombre:</label>
-        <div>
-            <InputText @bind-Value="@persona.Name"></InputText>
-            <ValidationMessage For="@(() => persona.Name)"/>
-        </div>
-    </div>
-  
-        <button type="submit" class="btn btn-success" style="margin-top:2px;">Crear Persona.</button>
-        <DataAnnotationsValidator></DataAnnotationsValidator>  
-    
-</EditForm>
+<FormularioPersonas TextoBoton="Crear Persona" OnValidSubmit="@CrearPersona" Persona="@persona"></FormularioPersonas>
 
 @code {
 
     Persona persona = new Persona();
 
-    async Task CreaarPersona()
+    async Task CrearPersona()
     {
         await Http.PostJsonAsync("personas", persona);
         UriHelper.NavigateTo("indice-personas");
