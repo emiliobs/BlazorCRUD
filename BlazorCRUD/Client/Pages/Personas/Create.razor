@@ -1,0 +1,31 @@
+﻿@page  "/crear-persona"
+@inject HttpClient Http
+@inject IUriHelper UriHelper
+
+<h3>Crear Persona</h3>
+
+<EditForm Model="@persona" OnValidSubmit="@CreaarPersona">
+    <div class="form-field">
+        <label>Nombre:</label>
+        <div>
+            <InputText @bind-Value="@persona.Name"></InputText>
+            <ValidationMessage For="@(() => persona.Name)"/>
+        </div>
+    </div>
+  
+        <button type="submit" class="btn btn-success" style="margin-top:2px;">Crear Persona.</button>
+        <DataAnnotationsValidator></DataAnnotationsValidator>  
+    
+</EditForm>
+
+@code {
+
+    Persona persona = new Persona();
+
+    async Task CreaarPersona()
+    {
+        await Http.PostJsonAsync("personas", persona);
+        UriHelper.NavigateTo("indice-personas");
+    }
+
+}

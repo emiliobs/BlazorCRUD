@@ -23,6 +23,21 @@ namespace BlazorCRUD.Server.Controllers
 
         [HttpGet]
         public async Task<ActionResult<List<Persona>>> GetPersonas() => await _context.Personas.ToListAsync();
+
+        [HttpGet("{id}", Name = "ObtenerPersona")]
+        public async Task<ActionResult<Persona>> Get(int id) => await _context.Personas.FirstOrDefaultAsync(x => x.Id.Equals(id));
+        
+
+        [HttpPost]
+        public async Task<ActionResult> Post(Persona persona)
+        {
+            _context.Add(persona);
+            await _context.SaveChangesAsync();
+
+            return new CreatedAtRouteResult("ObtenerPersona",  new { id = persona.Id },persona);
+        }
+
+
        
     }
 }
