@@ -5,8 +5,8 @@
 @using CsvHelper
 
 
-    <h3>Personas</h3>
-<div  style="margin-bottom:4px;">
+<h3>Personas</h3>
+<div style="margin-bottom:4px;">
     <a href="crear-persona" class="btn btn-success">Nueva Persona.</a>
 </div>
 
@@ -14,7 +14,7 @@
 {
     <text>Cargando......</text>
 }
-else if(Personas.Length == 0)
+else if (Personas.Length == 0)
 {
     <text>No Hay Personas en la base de datos.</text>
 }
@@ -26,33 +26,34 @@ else
                 <th>Id</th>
                 <th>Nombre</th>
                 <th></th>
-               
-                
+
+
             </tr>
         </thead>
         <tbody>
             @foreach (var persona in Personas)
             {
-            <tr>
-                <td>
-                    @persona.Id
-                </td>
-                <td>
-                    @persona.Name
-                </td>
-               
-                <td>
-                    <a class="btn btn-success" href="editar-persona/@persona.Id">Editar</a> |
-                    <button class="btn btn-danger" @onclick="@(() =>  BorrarPersona(persona.Id))">Borrar</button>
-                </td>
-                
-            </tr>
+                <tr>
+                    <td>
+                        @persona.Id
+                    </td>
+                    <td>
+                        @persona.Name
+                    </td>
+
+                    <td>
+                        <a class="btn btn-success" href="editar-persona/@persona.Id">Editar</a> |
+                        <button class="btn btn-danger" @onclick="@(() =>  BorrarPersona(persona.Id))">Borrar</button>
+                    </td>
+
+                </tr>
             }
         </tbody>
     </table>
 
     <hr />
     <button @onclick="@ExportarCSV">Exportar CSV.</button>
+    <button @onclick="@ExportarExcel">Exportar EXCEL.</button>
 }
 
 @code {
@@ -62,6 +63,29 @@ else
     protected override async Task OnInitializedAsync()
     {
         await CargarPersonas();
+    }
+
+    private void ExportarExcel()
+    {
+        using (var package = new ExcelPackage())
+        {
+            var worksheet = package.Workbook.Worksheets.Add("Personas");
+
+            var tableBody = worksheet.Cells["A1:A1"].LoadFromCollection( from p in Personas select new { p.Id, p.Name }, true);
+
+            var header = worksheet.Cells["A1:B1"];
+            worksheet.DefaultColWidth = 25;
+            tableBody.Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+            tableBody.Style.Fill.PatternType = ExcelFillStyle.Solid;
+            tableBody.Style.Fill.BackgroundColor.SetColor(Color.WhiteSmoke);
+            tableBody.Style.Border.BorderAround(ExcelBorderStyle.Medium);
+            header.Style.Font.Bold = true;
+            header.Style.Font.Color.SetColor(Color.White);
+            header.Style.Fill.PatternType = ExcelFillStyle.Solid;
+            header.Style.Fill.BackgroundColor.SetColor(Color.DarkBlue);
+
+            JS.GuardarComo("personas.xlsx", package.GetAsByteArray());
+        }
     }
 
     private void ExportarCSV()
