@@ -38,7 +38,7 @@ namespace BlazorCRUD.Server.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult> put(Persona persona)
+        public async Task<ActionResult> Put(Persona persona)
         {
             _context.Entry(persona).State = EntityState.Modified;
             await _context.SaveChangesAsync();

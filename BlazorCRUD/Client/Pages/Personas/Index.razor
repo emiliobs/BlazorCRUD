@@ -1,6 +1,8 @@
 ﻿@page "/indice-personas"
 @inject HttpClient Http
 @inject IJSRuntime JS
+@using System.IO
+@using CsvHelper
 
 
     <h3>Personas</h3>
@@ -48,6 +50,9 @@ else
             }
         </tbody>
     </table>
+
+    <hr />
+    <button @onclick="@ExportarCSV">Exportar CSV.</button>
 }
 
 @code {
@@ -57,6 +62,24 @@ else
     protected override async Task OnInitializedAsync()
     {
         await CargarPersonas();
+    }
+
+    private void ExportarCSV()
+    {
+        using (var memoryStream = new MemoryStream())
+        {
+            using (var writer = new StreamWriter(memoryStream))
+            {
+                using (var csv = new CsvWriter(writer))
+                {
+                    csv.WriteRecords(Personas);
+                }
+
+                var arr = memoryStream.ToArray();
+
+                JS.GuardarComo("personas.csv", arr);
+            }
+        }
     }
 
     async Task CargarPersonas()
@@ -83,6 +106,6 @@ else
             await CargarPersonas();
         }
 
-        
+
     }
 }
