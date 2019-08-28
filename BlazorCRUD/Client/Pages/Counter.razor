@@ -1,20 +1,56 @@
 ﻿@page "/counter"
 
+@attribute [Authorize]
+
 <h1>Counter</h1>
 
 <p>Current count: @currentCount</p>
 
 <input type="number" @bind="currentCount" />
 
+@*<AuthorizeView>
+        <Authorized>
+
+            <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+
+        </Authorized>
+        <NotAuthorized>
+            <p>Usted no Esta autorizado.....</p>
+        </NotAuthorized>
+        <Authorizing>
+            <p>Autorizando.....</p>
+        </Authorizing>
+    </AuthorizeView>*@
+
 <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
 
 
 
+
 @code {
+
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationState { get; set; }
+
     int currentCount = 10;
 
-    void IncrementCount()
+    async Task IncrementCount()
     {
-        currentCount +=5;
+        var authState = await authenticationState;
+        var usuario = authState.User;
+
+        if (usuario.Identity.IsAuthenticated)
+        {
+
+            currentCount += 5;
+
+            Console.WriteLine($"El suaurio es: {usuario.Identity.Name}");
+
+        }
+        else
+        {
+            currentCount -= 5;
+
+        }
     }
 }
