@@ -1,6 +1,8 @@
 ﻿@page  "/crear-persona"
 @inject HttpClient Http
 @inject IUriHelper UriHelper
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
 
 <h3>Crear Persona</h3>
 

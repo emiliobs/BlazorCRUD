@@ -6,9 +6,13 @@
 
 
 <h3>Personas</h3>
-<div style="margin-bottom:4px;">
-    <a href="crear-persona" class="btn btn-success">Nueva Persona.</a>
-</div>
+<AuthorizeView>
+    <Authorized>
+        <div>
+            <a class="btn btn-success" href="crear-persona">Nueva Persona</a>
+        </div>
+    </Authorized>
+</AuthorizeView>
 
 @if (Personas == null)
 {
@@ -42,8 +46,13 @@ else
                     </td>
 
                     <td>
+                        <AuthorizeView>
+                            <Authorized>
                         <a class="btn btn-success" href="editar-persona/@persona.Id">Editar</a> |
                         <button class="btn btn-danger" @onclick="@(() =>  BorrarPersona(persona.Id))">Borrar</button>
+
+                            </Authorized>
+                        </AuthorizeView>
                     </td>
 
                 </tr>

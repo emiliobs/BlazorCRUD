@@ -10,7 +10,9 @@ namespace BlazorCRUD.Client
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddAuthorizationCore();
-            services.AddScoped<AuthenticationStateProvider, AuthStateProviderFalso>();
+            services.AddScoped<JWTAuthenticationProvider>();
+            services.AddScoped<AuthenticationStateProvider,JWTAuthenticationProvider>(provider => provider.GetRequiredService<JWTAuthenticationProvider>());
+            services.AddScoped<ILoginService, JWTAuthenticationProvider>(provider => provider.GetRequiredService<JWTAuthenticationProvider>());
         }
 
         public void Configure(IComponentsApplicationBuilder app)
