@@ -14,17 +14,17 @@
     </Authorized>
 </AuthorizeView>
 
-@if (Personas == null)
-{
-    <text>Cargando......</text>
-}
-else if (Personas.Length == 0)
-{
-    <text>No Hay Personas en la base de datos.</text>
-}
-else
-{
-    <table class="table">
+<div>
+    <ListadoGenerico Listado="Personas">
+        @*<PlantillaNula>
+            <img src="https://www.ngs.noaa.gov/ANTCAL/images/load.gif"/>
+        </PlantillaNula>
+        <PlantillaVacia>
+            <text>NO existen personas para mostrar.....</text>
+        </PlantillaVacia>*@
+        <PlantillaConElementos>
+
+              <table class="table">
         <thead>
             <tr>
                 <th>Id</th>
@@ -59,18 +59,34 @@ else
             }
         </tbody>
     </table>
+        
+        </PlantillaConElementos>
+    </ListadoGenerico>
+    <ListadoGenerico Listado="Personas">
+        <PlantillaConElementosTipo Context="persona">
+            <div class="card">
+                <div class="card-body">
+                       @persona.Name
+                </div>
+            </div>
+        </PlantillaConElementosTipo>
+    </ListadoGenerico>
+    
+</div>
+
 
     <hr />
     <button @onclick="@ExportarCSV">Exportar CSV.</button>
     <button @onclick="@ExportarExcel">Exportar EXCEL.</button>
-}
+
 
 @code {
 
-    Persona[] Personas { get; set; }
+    List<Persona> Personas { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
+
         await CargarPersonas();
     }
 
@@ -117,7 +133,10 @@ else
 
     async Task CargarPersonas()
     {
-        Personas = await Http.GetJsonAsync<Persona[]>("Personas");
+        Personas = await Http.GetJsonAsync<List<Persona>>("Personas");
+
+        //await Task.Delay(3000);
+        //Personas = new List<Persona>();
 
         //Personas = new Persona[]
         //{
