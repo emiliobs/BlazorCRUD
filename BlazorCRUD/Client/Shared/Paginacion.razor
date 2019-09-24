@@ -1,0 +1,9 @@
+﻿<h3>Paginacion</h3>
+
+@code {
+    [Parameter] public int PaginaActual { get; set; } = 1;
+    [Parameter] public int PaginasTotales { get; set; }
+    [Parameter] public int Radio { get; set; } = 3;
+    [Parameter] EventCallback<int> PaginaSeleccionada { get; set; }
+
+}
