@@ -27,7 +27,7 @@ namespace BlazorCRUD.Server.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<ActionResult<List<Persona>>> GetPersonas([FromQuery] Paginacion paginacion)
+        public async Task<ActionResult<List<Persona>>> GetPersonas([FromQuery] Paginacions paginacion)
         {
 
             var queryable = _context.Personas.AsQueryable();

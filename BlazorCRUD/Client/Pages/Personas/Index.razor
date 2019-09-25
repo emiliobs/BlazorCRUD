@@ -3,6 +3,7 @@
 @inject IJSRuntime JS
 @using System.IO
 @using CsvHelper
+@using System.Text.Json
 
 
 <h3>Personas</h3>
@@ -13,6 +14,8 @@
         </div>
     </Authorized>
 </AuthorizeView>
+
+<Paginacion PaginasTotales="paginaTotales" PaginaActual="paginaActual" PaginaSeleccionada="PaginaSeleccionada"></Paginacion>
 
 <div>
     <ListadoGenerico Listado="Personas">
@@ -84,10 +87,19 @@
 
     List<Persona> Personas { get; set; }
 
+    private int paginaActual = 1;
+    private int paginaTotales;
+
     protected override async Task OnInitializedAsync()
     {
 
         await CargarPersonas();
+    }
+
+    private async void PaginaSeleccionada(int pagina)
+    {
+        paginaActual = pagina;
+        await CargarPersonas(pagina);
     }
 
     private void ExportarExcel()
@@ -131,9 +143,27 @@
         }
     }
 
-    async Task CargarPersonas()
+    async Task CargarPersonas(int pagina = 1, int cantidadRegistrosAMostrar = 5)
     {
-        Personas = await Http.GetJsonAsync<List<Persona>>("Personas");
+
+        var httpRespose = await Http.GetAsync($"Personas?pagina={pagina}&CantidadAMOstrar={cantidadRegistrosAMostrar}");
+        if (httpRespose.IsSuccessStatusCode)
+        {
+            paginaTotales = int.Parse(httpRespose.Headers.GetValues("totalPaginas").FirstOrDefault());
+            Console.WriteLine($"paginasTotales {paginaTotales.ToString()}");
+
+            var responseString = await httpRespose.Content.ReadAsStringAsync();
+            Personas = JsonSerializer.Deserialize<List<Persona>>(responseString, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+        }
+        else
+        {
+            Console.WriteLine("Error");
+        }
+
+
+
+
+        // Personas = await Http.GetJsonAsync<List<Persona>>("Personas");
 
         //await Task.Delay(3000);
         //Personas = new List<Persona>();
